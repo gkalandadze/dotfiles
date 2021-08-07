@@ -13,6 +13,11 @@ _comp_options+=(globdots)
 setopt COMPLETE_ALIASES
 zstyle ':completion::complete:*' gain-privileges 1
 
+# Fix Home,End,Delete keys
+bindkey  "^[[H"   beginning-of-line
+bindkey  "^[[F"   end-of-line
+bindkey  "^[[3~"  delete-char
+
 
 # Add rehash hook
 ######################################################
