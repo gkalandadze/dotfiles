@@ -116,18 +116,22 @@ bindkey '^Z' ctrlz
 # Aliases
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias grep='grep --colour=auto'
-alias ls='exa --group-directories-first'
-alias la='exa -a --group-directories-first'
-alias ll='exa -lg --group-directories-first --header --icons --git --color-scale'
-alias lla='exa -lag --group-directories-first --header --icons --git --color-scale'
-alias lt='exa -aT --group-directories-first --icons --git'
+if [ -x "$(command -v exa)" ]; then
+  alias ls='exa --group-directories-first'
+  alias la='exa -a --group-directories-first'
+  alias ll='exa -lg --group-directories-first --header --icons --git --color-scale'
+  alias lla='exa -lag --group-directories-first --header --icons --git --color-scale'
+  alias lt='exa -aT --group-directories-first --icons --git'
+fi
 alias cp='cp -iv'
 alias pi='ssh gkala@192.168.1.250'
 alias vaultwarden_sync='rsync -azcPv --delete gkala@192.168.1.250:/vw-data/backups/ /home/gkala/bitwarden/bitwarden_backup/'
-alias history='history -fD 1'
+alias history='history -iD 1'
 
 
-source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+if [ -f /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme ]; then
+  source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
