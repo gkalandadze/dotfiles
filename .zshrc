@@ -86,6 +86,7 @@ hgrep() {
 export EDITOR="/usr/bin/vim"
 export VDPAU_DRIVER=nvidia
 export LIBVA_DRIVER_NAME=vdpau
+# export NODE_EXTRA_CA_CERTS="/home/gkala/bitwarden/certificates/self-signed-ca-cert.pem"
 
 
 # Coloured manuals
@@ -127,6 +128,10 @@ alias cp='cp -iv'
 alias pi='ssh gkala@192.168.1.250'
 alias vaultwarden_sync='rsync -azcPv --delete gkala@192.168.1.250:/vw-data/backups/ /home/gkala/bitwarden/bitwarden_backup/'
 alias history='history -iD 1'
+alias lofi='mpv --really-quiet -vo tct --profile=sw-fast --ytdl-format=best "https://www.youtube.com/watch?v=5qap5aO4i9A"'
+if [ -x "$(command -v bat)" ]; then
+  alias cat='bat -pp'
+fi
 
 
 if [ -f /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme ]; then
