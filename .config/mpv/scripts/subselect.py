@@ -1,3 +1,4 @@
+#!/home/gkala/projects/python_virtualenv/venv/bin/python
 from tkinter import *
 from subliminal import *
 from babelfish import Language
@@ -8,6 +9,7 @@ class subselect :
 
     def __init__(self) :
         self.root = Tk()
+        self.root.geometry("850x250+300+300")
         frame = self.root
         frame.title("Subtitle Downloader")
         self.video_title_in = Entry(frame, width=100)
@@ -20,6 +22,16 @@ class subselect :
         self.best_button = Button(frame, text="Best", command=self.download_best_subtitle)
         self.best_button.grid(row=0, column=2, sticky=E+W)
         self.result_listbox = Listbox(self.root)
+        self.scrollbar = Scrollbar(self.root)
+
+
+        with open("/home/gkala/.config/mpv/subselect.pass", "r") as f:
+            lines=f.readlines()
+            username=lines[0]
+            password=lines[1]
+        self.providers_list = ['addic7ed','legendastv','opensubtitles'] # not used
+        self.providers_auth = {'opensubtitles': {'username': username, 'password': password}}
+
 
     def show_subtitles(self, subtitles) :
         self.result_listbox.delete(0, END)
@@ -31,17 +43,20 @@ class subselect :
             elif (s.provider_name == "podnapisi"
                     or s.provider_name == "addic7ed"
                     or s.provider_name == "subscenter") :
-                listname = "[{}]: {}".format(s.provider_name, s.title)
+                listname = "[{}]: {}".format(s.provider_name, s.info)
             elif s.provider_name == "legendastv" :
                 listname = "[legendastv]: {}".format(s.name)
             elif s.provider_name == "tvsubtitles" :
                 listname = "[tvsubtitles]: {}".format(s.release)
             else :
-                listname = "[{}]: {}".format(s.provider_name, s.id)
+                listname = "[{}]: {}".format(s.provider_name, s.info)
 
             self.result_listbox.insert(END, listname)
             self.subtitles_in_list += [s]
         self.result_listbox.grid(row=1, column=0, columnspan=3, sticky=E+W)
+        self.result_listbox.config(yscrollcommand = self.scrollbar.set)
+        self.scrollbar.config(command = self.result_listbox.yview)
+        self.scrollbar.grid(column=4, row=1, sticky='NSE')
 
         if not hasattr(self, "download_button") :
             self.info_label = Label(self.root)
@@ -49,6 +64,7 @@ class subselect :
             self.download_button = Button(self.root, text="Download", command=self.download_selected_subtitle)
             self.download_button.grid(row=2, column=2)
         self.info_label.configure(text="{} Subtitles".format(self.result_listbox.size()))
+        self.root.geometry("880x250")
             
     def get_video_from_title(self) :
         video_title = self.video_title_in.get()
@@ -63,12 +79,18 @@ class subselect :
         self.search()
 
     def search(self) :
+        matches = dict()
         try :
             self.video = self.get_video_from_title()
-            subtitles = list_subtitles([self.video], {Language(self.language)}, providers=None)
+            subtitles = list_subtitles([self.video], {Language(self.language)}, providers=None, provider_configs=self.providers_auth)
         except ValueError as exc :
             self.show_message("Error", str(exc))
         else :
+            # for s in subtitles[self.video]:
+            #     matches[s] = compute_score(s, self.video)
+            
+            # sorted_matches = sorted(matches, key=matches.get)
+            # self.show_subtitles(sorted_matches)
             self.show_subtitles(subtitles[self.video])
 
     def download_best_subtitle(self) :

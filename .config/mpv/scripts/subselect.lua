@@ -2,7 +2,7 @@ local utils = require 'mp.utils'
 require 'mp.options'
 
 options = {}
-options.down_dir = ""
+options.down_dir = "/home/gkala"
 options.sub_language = "eng"
 
 if package.config:sub(1,1) == "/" then
