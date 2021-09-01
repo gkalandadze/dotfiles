@@ -82,12 +82,6 @@ hgrep() {
 # zle -N down-line-or-local-history
 
 
-# Variables
-export EDITOR="/usr/bin/vim"
-export VDPAU_DRIVER=nvidia
-export LIBVA_DRIVER_NAME=vdpau
-
-
 # Coloured manuals
 man() {
   env \
@@ -114,6 +108,7 @@ bindkey '^Z' ctrlz
 
 
 # Aliases
+alias sudo='sudo '
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias grep='grep --colour=auto'
 if [ -x "$(command -v exa)" ]; then
@@ -131,6 +126,7 @@ if [ -x "$(command -v bat)" ]; then
   alias cat='bat -pp'
 fi
 alias mapscii='telnet mapscii.me'
+alias c='clear'
 
 # Launch youtube video in terminal
 lofi() {
