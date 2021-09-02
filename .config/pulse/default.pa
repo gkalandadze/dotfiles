@@ -1,0 +1,13 @@
+#!/usr/bin/pulseaudio -nF
+
+.include /etc/pulse/default.pa
+.nofail
+unload-module module-suspend-on-idle
+.fail
+
+
+# use "pacmd list-sinks" to find out sink name and put it in master=
+
+load-module module-remap-sink sink_name=reverse-stereo master=alsa_output.pci-0000_00_1b.0.analog-stereo channels=2 master_channel_map=front-right,front-left channel_map=front-left,front-right
+set-default-sink reverse-stereo
+
