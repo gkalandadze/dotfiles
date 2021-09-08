@@ -1,5 +1,5 @@
 typeset -U PATH path
-path=("/home/gkala/scripts" "$path[@]")
+path=("/home/gkala/bin" "$path[@]")
 export PATH
 
 
