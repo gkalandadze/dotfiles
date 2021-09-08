@@ -57,10 +57,6 @@ setopt HIST_IGNORE_SPACE
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
 
-# Search through zsh history
-hgrep() {
-  fc -Dlim "*$@*" 1
-}
 
 # --- Uncomment these lines to enable sharing history between zsh sessions(disables saving duration of command to history) ---
 # setopt SHARE_HISTORY
@@ -81,19 +77,6 @@ hgrep() {
 # }
 # zle -N down-line-or-local-history
 
-
-# Coloured manuals
-man() {
-  env \
-    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-    LESS_TERMCAP_md=$(printf "\e[1;31m") \
-    LESS_TERMCAP_me=$(printf "\e[0m") \
-    LESS_TERMCAP_se=$(printf "\e[0m") \
-    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-    LESS_TERMCAP_ue=$(printf "\e[0m") \
-    LESS_TERMCAP_us=$(printf "\e[1;32m") \
-    man "$@"
-}
 
 # Turn ctrl+z into toggle switch
 ctrlz() {
@@ -119,22 +102,25 @@ if [ -x "$(command -v exa)" ]; then
   alias lt='exa -aT --group-directories-first --icons --git'
 fi
 alias cp='cp -iv'
+alias mv='mv -i'
+alias rm='rm -i'
 alias pi='ssh gkala@192.168.1.250'
 alias vaultwarden_sync='rsync -azcPv --delete gkala@192.168.1.250:/vw-data/backups/ /home/gkala/bitwarden/bitwarden_backup/'
 alias history='history -iD 1'
 if [ -x "$(command -v bat)" ]; then
   alias cat='bat -pp'
 fi
-alias mapscii='telnet mapscii.me'
 alias c='clear'
+# Interactive world map in terminal
+alias mapscii='telnet mapscii.me'
+# Get error messages from journalctl
+alias jctl='journalctl -p 3 -xb'
+# Benchmark zsh
+alias zbench='for i in $(seq 1 10); do; time zsh -i -c exit; done'
 
-# Launch youtube video in terminal
-lofi() {
-  vol=$1
-  url=$2
-  link=${url:-'https://www.youtube.com/watch?v=5qap5aO4i9A'}
-  mpv --volume=${vol:-70} --really-quiet -vo tct --profile=sw-fast --ytdl-format=best $link
-}
+
+# Source functions
+[[ ! -f ~/.config/zsh/functions ]] || source ~/.config/zsh/functions
 
 
 if [ -f /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme ]; then
