@@ -1,0 +1,41 @@
+#!/usr/bin/env sh
+
+HELP_TEXT="cat << EOM
+$(basename "$0") - Encrypt files symmetrically with GPG
+Usage: $(basename "$0") [args] [filename]
+Arguments:
+-e | --encrypt              Encrypt file
+-d | --decrypt              Decrypt file
+EOM
+"
+
+encrypt () {
+  if gpg -c --pinentry-mode loopback --no-symkey-cache --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 --output "$FILE".gpg "$FILE" ; then
+    echo "File Encrypted Successfully"
+    echo "Encrypted Filename: $FILE.gpg"
+  fi
+}
+
+decrypt () {
+  gpg --pinentry-mode loopback --no-symkey-cache --quiet --decrypt "$FILE"
+}
+
+show_help () {
+  echo "$HELP_TEXT"
+}
+
+while [ "$#" -gt 0 ]; do
+  case $1 in
+    -e|--encrypt)           MODE="encrypt"; FILE=$2; shift; shift;;
+    -d|--decrypt)           MODE="decrypt"; FILE=$2; shift; shift;;
+    *)                      show_help; exit 1                    ;;
+  esac
+done
+
+if [ "$MODE" = "encrypt" ]; then
+  encrypt
+  exit 0
+elif [ "$MODE" = "decrypt" ]; then
+  decrypt
+  exit 0
+fi
