@@ -1,0 +1,30 @@
+# Search through zsh history
+hgrep() {
+  fc -Dlim "*$@*" 1
+}
+
+# Restart plasmashell and kwin
+restart-kde() {
+  plasmashell --replace > /dev/null 2>&1 & disown
+  kwin_x11 --replace > /dev/null 2>&1 & disown
+}
+
+# Launch youtube video in terminal
+lofi() {
+  url=$1
+  link=${url:-"https://www.youtube.com/watch?v=5qap5aO4i9A"}
+  mpv --volume=70 --really-quiet -vo tct --profile=sw-fast --ytdl-format=best "$link"
+}
+
+# Coloured manuals
+man() {
+  env \
+    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+    LESS_TERMCAP_md=$(printf "\e[1;31m") \
+    LESS_TERMCAP_me=$(printf "\e[0m") \
+    LESS_TERMCAP_se=$(printf "\e[0m") \
+    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+    LESS_TERMCAP_ue=$(printf "\e[0m") \
+    LESS_TERMCAP_us=$(printf "\e[1;32m") \
+    man "$@"
+}
