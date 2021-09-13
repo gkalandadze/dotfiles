@@ -1,3 +1,14 @@
 #!/usr/bin/env sh
 
-gpg --pinentry-mode loopback --no-symkey-cache --quiet --decrypt "$1"
+filename=$1
+extension="${filename##*.}"
+base_filename="${filename%.*}"
+
+if [ "$extension" = "gpg" ] && [ -f "$filename" ]; then
+  if gpg --pinentry-mode loopback --no-symkey-cache --quiet --output "$base_filename" --decrypt "$filename" ; then
+    echo "> File Decrypted Successfully"
+    echo "> Decrypted Filename: $base_filename"
+  fi
+else
+  echo "> File doesn't exists or isn't encrypted" && exit 0
+fi

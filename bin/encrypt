@@ -10,14 +10,42 @@ EOM
 "
 
 encrypt () {
-  if gpg -c --pinentry-mode loopback --no-symkey-cache --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 --output "$FILE".gpg "$FILE" ; then
-    echo "File Encrypted Successfully"
-    echo "Encrypted Filename: $FILE.gpg"
+  if [ -f "$FILE" ]; then
+    if gpg -c --pinentry-mode loopback --no-symkey-cache --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 --output "$FILE".gpg "$FILE" ; then
+      echo "> File Encrypted Successfully"
+      echo "> Encrypted Filename: $FILE.gpg"
+    fi
+  else
+    if [ -d "$FILE" ]; then
+    echo "> Creating archive from provided directory"
+    if tar czf "$FILE".tar.gz "$FILE" ; then
+      echo "> Created archive"
+      echo "> Encrypting Archive"
+      if gpg -c --pinentry-mode loopback --no-symkey-cache --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 --output "$FILE".tar.gz.gpg "$FILE".tar.gz ; then
+        echo "> Archive Encrypted Successfully"
+        echo "> Encrypted Filename: $FILE.tar.gz.gpg"
+        rm -f "$FILE".tar.gz && echo "> Removed temporary archive"
+      fi
+    fi
+    else
+      echo "> Couldn't create archive!" && exit 1
+    fi
   fi
 }
 
 decrypt () {
-  gpg --pinentry-mode loopback --no-symkey-cache --quiet --decrypt "$FILE"
+  filename=$FILE
+  extension="${filename##*.}"
+  base_filename="${filename%.*}"
+
+  if [ "$extension" = "gpg" ] && [ -f "$filename" ]; then
+    if gpg --pinentry-mode loopback --no-symkey-cache --quiet --output "$base_filename" --decrypt "$filename" ; then
+      echo "> File Decrypted Successfully"
+      echo "> Decrypted Filename: $base_filename"
+    fi
+  else
+    echo "> File doesn't exists or isn't encrypted" && exit 0
+  fi
 }
 
 show_help () {
