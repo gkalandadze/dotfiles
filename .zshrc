@@ -53,7 +53,7 @@ HISTFILE=~/.histfile
 HISTSIZE=100000
 SAVEHIST=100000
 setopt HIST_IGNORE_SPACE
-#setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_ALL_DUPS
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
 
@@ -88,6 +88,9 @@ ctrlz() {
 }
 zle -N ctrlz
 bindkey '^Z' ctrlz
+
+# Use ranger to switch directories and bind it to ctrl-o
+bindkey -s '^o' 'source ranger\n'
 
 
 # Aliases
