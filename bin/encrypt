@@ -1,40 +1,40 @@
 #!/usr/bin/env sh
 
-HELP_TEXT="cat << EOM
-$(basename "$0") - Encrypt files symmetrically with GPG
+help_text=$(cat << EOM
+$(basename "$0") - Encrypt files or folders symmetrically with GPG
 Usage: $(basename "$0") [args] [filename]
 Arguments:
--e | --encrypt              Encrypt file
--d | --decrypt              Decrypt file
+-e | --encrypt              Encrypt file or folder (optional)
+-d | --decrypt              Decrypt file or folder
+-h | --help                 Show help message
 EOM
-"
+)
 
 encrypt () {
-  if [ -f "$FILE" ]; then
-    if gpg -c --pinentry-mode loopback --no-symkey-cache --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 --output "$FILE".gpg "$FILE" ; then
+  if [ -f "$filename" ]; then
+    if gpg -c --pinentry-mode loopback --no-symkey-cache --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 --output "$filename".gpg "$filename" ; then
       echo "> File Encrypted Successfully"
-      echo "> Encrypted Filename: $FILE.gpg"
+      echo "> Encrypted Filename: $filename.gpg"
     fi
-  else
-    if [ -d "$FILE" ]; then
-    echo "> Creating archive from provided directory"
-    if tar czf "$FILE".tar.gz "$FILE" ; then
-      echo "> Created archive"
-      echo "> Encrypting Archive"
-      if gpg -c --pinentry-mode loopback --no-symkey-cache --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 --output "$FILE".tar.gz.gpg "$FILE".tar.gz ; then
-        echo "> Archive Encrypted Successfully"
-        echo "> Encrypted Filename: $FILE.tar.gz.gpg"
-        rm -f "$FILE".tar.gz && echo "> Removed temporary archive"
+  elif [ -d "$filename" ]; then
+      echo "> Creating archive from provided directory"
+      if tar czf "$filename".tar.gz "$filename" ; then
+        echo "> Created archive"
+        echo "> Encrypting Archive"
+        if gpg -c --pinentry-mode loopback --no-symkey-cache --s2k-cipher-algo AES256 --s2k-digest-algo SHA512 --s2k-count 65536 --output "$filename".tar.gz.gpg "$filename".tar.gz ; then
+          echo "> Archive Encrypted Successfully"
+          echo "> Encrypted Filename: $filename.tar.gz.gpg"
+          rm -f "$filename".tar.gz && echo "> Removed temporary archive"
+        fi
+      else
+        echo "> Couldn't create archive!" ; exit 1
       fi
-    fi
-    else
-      echo "> Couldn't create archive!" && exit 1
-    fi
+  else
+    echo "> Unknown file or folder" ; exit 1
   fi
 }
 
 decrypt () {
-  filename=$FILE
   extension="${filename##*.}"
   base_filename="${filename%.*}"
 
@@ -44,26 +44,18 @@ decrypt () {
       echo "> Decrypted Filename: $base_filename"
     fi
   else
-    echo "> File doesn't exists or isn't encrypted" && exit 0
+    echo "> File doesn't exists or isn't encrypted" ; exit 0
   fi
 }
 
-show_help () {
-  echo "$HELP_TEXT"
-}
 
-while [ "$#" -gt 0 ]; do
+if [ -n "$1" ]; then
   case $1 in
-    -e|--encrypt)           MODE="encrypt"; FILE=$2; shift; shift;;
-    -d|--decrypt)           MODE="decrypt"; FILE=$2; shift; shift;;
-    *)                      show_help; exit 1                    ;;
+    -d|--decrypt)       filename=$2 && decrypt && exit 0;;
+    -e|--encrypt)       filename=$2 && encrypt && exit 0;;
+    -h|--help)          echo "$help_text";        exit 0;;
+    *)                  filename=$1 && encrypt && exit 0;;
   esac
-done
-
-if [ "$MODE" = "encrypt" ]; then
-  encrypt
-  exit 0
-elif [ "$MODE" = "decrypt" ]; then
-  decrypt
-  exit 0
+else
+  echo "$help_text" && exit 0
 fi
