@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+# Only open one instance of spotify and use kdocker for tray icon
+# also if window is minimized or docked, bring it up.
+
+if pidof spotify > /dev/null ; then
+  window=$(xdotool search --name --class --classname --role spotify | sort -rn | sed '1d' | paste -sd ' ')
+  xdotool windowmap "$window"
+else
+  kdocker -q -m -i /usr/share/icons/Papirus/64x64/apps/spotify.svg -n Spotify spotify
+fi
