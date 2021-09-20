@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+# Lookup packages using fzf and install them with paru when selected
+
+cache_path="$HOME/.cache/pfzf"
+cache="$cache_path/cache"
+
+[ -d "$cache_path" ] || mkdir -p "$cache_path"
+
+if [ ! -f "$cache" ]; then
+  paru -Slq > "$cache"
+elif [ "$(find "$cache_path" -mtime +1 -name "cache")" ]; then
+  paru -Slq > "$cache"
+fi
+
+fzf --color=dark --prompt='packages: ' --height=35 --ansi --preview='paru -Si {}' --preview-window=right:wrap --layout=reverse < "$cache" | xargs -r -o paru -S
