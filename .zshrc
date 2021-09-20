@@ -57,6 +57,9 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
 
+# Disables ctrl+s
+setopt noflowcontrol
+
 
 # --- Uncomment these lines to enable sharing history between zsh sessions(disables saving duration of command to history) ---
 # setopt SHARE_HISTORY
@@ -88,6 +91,13 @@ ctrlz() {
 }
 zle -N ctrlz
 bindkey '^Z' ctrlz
+
+# Search home directory for files and open with editor given as argument
+fzf_open() {
+  find "$HOME" -type f | fzf | xargs -r -o "$1"
+}
+bindkey -s '^f' "fzf_open vim\n"
+bindkey -s '^s' "fzf_open subl\n"
 
 # Use ranger to switch directories and bind it to ctrl-o
 bindkey -s '^o' 'source ranger\n'
@@ -123,7 +133,7 @@ alias zbench='for i in $(seq 1 10); do; time zsh -i -c exit; done'
 
 
 # Source functions
-[[ ! -f ~/.config/zsh/functions ]] || source ~/.config/zsh/functions
+[ -f ~/.config/zsh/functions ] && source ~/.config/zsh/functions
 
 
 if [ -f /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme ]; then
