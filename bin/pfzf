@@ -13,4 +13,6 @@ elif [ "$(find "$cache_path" -mtime +1 -name "cache")" ]; then
   paru -Slq > "$cache"
 fi
 
-fzf --color=dark --prompt='packages: ' --height=35 --ansi --preview='paru -Si {}' --preview-window=right:wrap --layout=reverse < "$cache" | xargs -r -o paru -S
+preview="paru -Si {} | tr -s '\n' ; paru -Qq {} &>/dev/null && echo -e '\033[0;32mInstalled       : Yes'"
+
+fzf --color=dark --prompt="packages: " --height=35 --ansi --preview="$preview" --preview-window=right:wrap --layout=reverse < "$cache" | xargs -r -o paru -S
