@@ -48,6 +48,9 @@ source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/doc/pkgfile/command-not-found.zsh
 
 
+# Disables ctrl+s
+setopt noflowcontrol
+
 # History stuff
 HISTFILE=~/.histfile
 HISTSIZE=100000
@@ -56,10 +59,6 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_ALL_DUPS
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
-
-# Disables ctrl+s
-setopt noflowcontrol
-
 
 # --- Uncomment these lines to enable sharing history between zsh sessions(disables saving duration of command to history) ---
 # setopt SHARE_HISTORY
@@ -79,28 +78,6 @@ setopt noflowcontrol
 #     zle set-local-history 0
 # }
 # zle -N down-line-or-local-history
-
-
-# Turn ctrl+z into toggle switch
-ctrlz() {
-  if [[ $#BUFFER == 0 ]]; then
-    fg >/dev/null 2>&1 && zle redisplay
-  else
-    zle push-input
-  fi
-}
-zle -N ctrlz
-bindkey '^Z' ctrlz
-
-# Search home directory for files and open with editor given as argument
-fzf_open() {
-  find "$HOME" -type f | fzf | xargs -r -o "$1"
-}
-bindkey -s '^f' "fzf_open vim\n"
-bindkey -s '^s' "fzf_open subl\n"
-
-# Use ranger to switch directories and bind it to ctrl-o
-bindkey -s '^o' 'source ranger\n'
 
 
 # Aliases
