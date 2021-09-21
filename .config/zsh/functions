@@ -11,8 +11,7 @@ restart-kde() {
 
 # Launch youtube video in terminal
 lofi() {
-  url=$1
-  link=${url:-"https://www.youtube.com/watch?v=5qap5aO4i9A"}
+  link=${1:-"https://www.youtube.com/watch?v=5qap5aO4i9A"}
   mpv --volume=70 --really-quiet -vo tct --profile=sw-fast --ytdl-format=best "$link"
 }
 
@@ -28,3 +27,35 @@ man() {
     LESS_TERMCAP_us=$(printf "\e[1;32m") \
     man "$@"
 }
+
+# Turn ctrl+z into toggle switch
+ctrlz() {
+  if [[ $#BUFFER == 0 ]]; then
+    fg >/dev/null 2>&1 && zle redisplay
+  else
+    zle push-input
+  fi
+}
+zle -N ctrlz
+bindkey '^Z' ctrlz
+
+
+# Use ranger to switch directories and bind it to ctrl-o
+rangercd () {
+  source ranger
+}
+zle -N rangercd
+bindkey '^o' rangercd
+
+
+# Search home directory for files and open when selected
+fzf_open_vim() {
+  find "$HOME" -type f | fzf | xargs -r -o vim
+}
+fzf_open_subl() {
+  find "$HOME" -type f | fzf | xargs -r -o subl
+}
+zle -N fzf_open_vim
+bindkey '^f' fzf_open_vim
+zle -N fzf_open_subl
+bindkey '^s' fzf_open_subl
