@@ -2,6 +2,9 @@
 
 # Lookup packages using fzf and install them with paru when selected
 
+command -v paru >/dev/null 2>&1 || { echo >&2 "paru isn't installed." ; exit 1; }
+command -v fzf >/dev/null 2>&1 || { echo >&2 "fzf isn't installed." ; exit 1; }
+
 cache_path="$HOME/.cache/pfzf"
 cache="$cache_path/cache"
 
@@ -13,6 +16,6 @@ elif [ "$(find "$cache_path" -mtime +1 -name "cache")" ]; then
   paru -Slq > "$cache"
 fi
 
-preview="paru -Si {} | tr -s '\n' ; paru -Qq {} &>/dev/null && echo -e '\033[0;32mInstalled       : Yes'"
+preview="paru -Si {} | tr -s '\n' ; paru -Qq | grep -x {} &>/dev/null && echo -e '\033[0;32mInstalled       : Yes'"
 
 fzf --color=dark --prompt="packages: " --height=35 --ansi --preview="$preview" --preview-window=right:wrap --layout=reverse < "$cache" | xargs -r -o paru -S
