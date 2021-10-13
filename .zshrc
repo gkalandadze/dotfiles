@@ -1,3 +1,5 @@
+[ $(tput colors) != "256" ] && exec bash -l
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -6,12 +8,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 autoload -Uz compinit
-zstyle ':completion:*' menu select
-zmodload zsh/complist
 compinit
-_comp_options+=(globdots)
+zstyle ':completion:*' menu select
 setopt COMPLETE_ALIASES
 zstyle ':completion::complete:*' gain-privileges 1
+zmodload zsh/complist
+_comp_options+=(globdots)
 
 # Fix Home,End,Delete keys
 bindkey  "^[[H"   beginning-of-line
@@ -88,7 +90,7 @@ if [ -x "$(command -v exa)" ]; then
   alias ls='exa --group-directories-first'
   alias la='exa -a --group-directories-first'
   alias ll='exa -lg --group-directories-first --header --icons --git --color-scale'
-  alias lla='exa -lag --group-directories-first --header --icons --git --color-scale'
+  alias lla='exa -laag --group-directories-first --header --icons --git --color-scale'
   alias lt='exa -aT --group-directories-first --icons --git'
 fi
 alias cp='cp -iv'
@@ -105,8 +107,6 @@ alias c='clear'
 alias mapscii='telnet mapscii.me'
 # Get error messages from journalctl
 alias jctl='journalctl -p 3 -xb'
-# Benchmark zsh
-alias zbench='for i in $(seq 1 10); do; time zsh -i -c exit; done'
 
 
 # Source functions
