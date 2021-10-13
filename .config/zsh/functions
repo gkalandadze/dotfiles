@@ -39,23 +39,26 @@ ctrlz() {
 zle -N ctrlz
 bindkey '^Z' ctrlz
 
-
-# Use ranger to switch directories and bind it to ctrl-o
+# Use ranger to switch directories and bind it to ctrl+o
 rangercd () {
-  source ranger
+  source ranger <$TTY
 }
-zle -N rangercd
-bindkey '^o' rangercd
-
+bindkey -s '^o' "rangercd\n"
 
 # Search home directory for files and open when selected
+# use ctrl+f for vim and ctrl+s for sublime
 fzf_open_vim() {
-  find "$HOME" -type f | fzf | xargs -r -o vim
+  find "$HOME" -type f 2>/dev/null | fzf | xargs -r -o vim
 }
 fzf_open_subl() {
-  find "$HOME" -type f | fzf | xargs -r -o subl
+  find "$HOME" -type f 2>/dev/null | fzf | xargs -r -o subl
 }
 zle -N fzf_open_vim
 bindkey '^f' fzf_open_vim
 zle -N fzf_open_subl
 bindkey '^s' fzf_open_subl
+
+# Exit terminal with ctrl+d
+exit_zsh() { exit }
+zle -N exit_zsh
+bindkey '^D' exit_zsh
