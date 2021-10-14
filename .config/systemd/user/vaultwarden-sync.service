@@ -1,0 +1,9 @@
+[Unit]
+Description=Sync vaultwarden backup
+
+[Service]
+Type=oneshot
+ExecStart=rsync -azcPv --delete gkala@192.168.1.250:/vw-data/backups/ /home/gkala/bitwarden/bitwarden_backup/
+
+[Install]
+WantedBy=default.target

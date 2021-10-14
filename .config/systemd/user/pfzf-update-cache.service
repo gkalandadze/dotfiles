@@ -1,0 +1,10 @@
+[Unit]
+Description=Update cache for pfzf
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/paru -Slq
+StandardOutput=file:/home/gkala/.cache/pfzf/cache
+
+[Install]
+WantedBy=default.target

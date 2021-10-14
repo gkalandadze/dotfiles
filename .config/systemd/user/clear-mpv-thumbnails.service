@@ -1,0 +1,9 @@
+[Unit]
+Description=Clear mpv thumbnails folder
+
+[Service]
+Type=oneshot
+ExecStart=/home/gkala/bin/clear_mpv_thumbs
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=Update pfzf cache on boot
+
+[Timer]
+# Run 180 seconds after boot(after service manager startup)
+OnStartupSec=180
+
+[Install]
+WantedBy=timers.target

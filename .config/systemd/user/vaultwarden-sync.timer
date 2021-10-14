@@ -1,0 +1,9 @@
+[Unit]
+Description=Sync vaultwarden backup on every boot
+
+[Timer]
+# Run 120 seconds after boot(after service manager startup)
+OnStartupSec=120
+
+[Install]
+WantedBy=timers.target

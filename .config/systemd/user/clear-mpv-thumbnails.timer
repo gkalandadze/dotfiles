@@ -1,0 +1,9 @@
+[Unit]
+Description=Clear mpv thumbnails on boot
+
+[Timer]
+# Run 150 seconds after boot(after service manager startup)
+OnStartupSec=150
+
+[Install]
+WantedBy=timers.target
