@@ -107,6 +107,12 @@ alias c='clear'
 alias mapscii='telnet mapscii.me'
 # Get error messages from journalctl
 alias jctl='journalctl -p 3 -xb'
+# Enable colors on ip command
+alias ip='ip -c=auto'
+alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl"
+
+# kubectl autocompletion
+[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
 
 
 # Source functions
