@@ -1,12 +1,16 @@
 #!/usr/bin/env sh
 
-# This script will remove 5 directories from mpv_thumbnails_cache folder if \
+# This script will remove 5 oldest directories from mpv_thumbnails_cache folder if
 # size of that folder is greater than 1000megabytes
 
 mpv_cache_dir="/home/gkala/.cache/mpv_thumbnails_cache"
 
+[ -d $mpv_cache_dir ] || exit 0
+
 size=$(du -sm $mpv_cache_dir | awk '{print $1}')
 
 if [ "$size" -gt 1000 ]; then
-    find $mpv_cache_dir -type d -printf '%T+ %p\n' | sort | head -n 5 | awk '{print $2}' | xargs -n1 rm -rf
+    find $mpv_cache_dir -type d -printf '%T+ %p\n' | sort | head -n 5 | awk '{print $2}' | xargs -n1 rm -rvf
+else
+    echo "Folder size is under 1GB"
 fi
