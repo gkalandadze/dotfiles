@@ -1,21 +1,35 @@
 #!/usr/bin/env sh
 
 # Lookup packages using fzf and install them with paru when selected
+# Use tab/shift-tab to select and deselect packages
+# Use ctrl+p to print pkgbuild and ctrl+x to reprint pkginfo
 
 command -v paru >/dev/null 2>&1 || { echo >&2 "paru isn't installed." ; exit 1; }
 command -v fzf >/dev/null 2>&1 || { echo >&2 "fzf isn't installed." ; exit 1; }
 
 cache_path="$HOME/.cache/pfzf"
-cache="$cache_path/cache"
+cache="$cache_path/packages"
 
 [ -d "$cache_path" ] || mkdir -p "$cache_path"
 
 if [ ! -f "$cache" ]; then
   paru -Slq > "$cache"
-elif [ "$(find "$cache_path" -mtime +1 -name "cache")" ]; then
+elif [ "$(find "$cache_path" -mtime +1 -name "packages")" ]; then
   paru -Slq > "$cache"
 fi
 
 preview="paru -Si {} | tr -s '\n' ; paru -Qq | grep -x {} &>/dev/null && echo -e '\033[0;32mInstalled       : Yes'"
+print_pkgbuild="paru -Gp {}"
 
-fzf --color=dark --prompt="packages: " --height=35 --ansi --preview="$preview" --preview-window=right:wrap --layout=reverse < "$cache" | xargs -r -o paru -S
+fzf --color=dark \
+    --prompt="packages: " \
+    --height=35 \
+    --ansi \
+    --multi \
+    --marker=">>" \
+    --preview="$preview" \
+    --preview-window=right:wrap \
+    --bind=ctrl-p:preview:"$print_pkgbuild" \
+    --bind=ctrl-x:preview:"$preview" \
+    --layout=reverse < "$cache" |
+    xargs -r -o paru -Syu
